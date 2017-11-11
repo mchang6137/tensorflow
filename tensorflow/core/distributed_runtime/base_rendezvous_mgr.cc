@@ -33,6 +33,8 @@ limitations under the License.
 #include "tensorflow/core/platform/mutex.h"
 #include "tensorflow/core/platform/types.h"
 
+using namespace std;
+
 namespace tensorflow {
 
 static void StartAbortRendevous(Rendezvous* rendez, const Status& s) {
@@ -198,6 +200,11 @@ Status BaseRemoteRendezvous::Send(const Rendezvous::ParsedKey& parsed,
           session_->worker_name);
     }
   }
+
+  std::string valueS = " Send data with estimated " + to_string(val.TotalBytes()) + " bytes. " + "Edge name: " + parsed.edge_name.ToString() + ". src_device: " + parsed.src_device.ToString() + ". dst_device: " + parsed.dst_device.ToString();
+  std::time_t begin_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  std::cout << std::to_string((std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count())+valueS << std::endl;
+
   // Buffers "val" and "device_context" in local_.
   return local_->Send(parsed, args, val, is_dead);
 }
